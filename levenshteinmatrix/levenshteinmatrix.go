@@ -33,7 +33,7 @@ func ComputeMatchVal(needle string, haystack string, index int) int {
 	}
 
 	for i := 0; i <= (haystackSize); i++ {
-		d[i*(needleSize+1)] = i
+		d[i*(needleSize+1)] = 0
 	}
 
 	for i := 0; i < haystackSize; i++ {
