@@ -1,28 +1,42 @@
 package levenshteinmatrix
 
-import (
-	"sync"
-)
-
 //LMatrixSearch contains the search target and and data required for a levenshtein
 //matrix search
 type LMatrixSearch struct {
 	SearchLibrary []string
 }
 
-//Returns a slice containing match distance for each of the items in the
-//SearchLibrary
-func (s *LMatrixSearch) SearchForSubstring(searchTerm string) []int {
-	//matches := make(chan int)
-	var wg sync.WaitGroup
-
-	for _, _ = range s.SearchLibrary {
-		wg.Add(1)
-	}
-	return []int{1}
+//NewLMatrixSearch returns a new LMatrixSerachStruct
+func NewLMatrixSearch(library []string) *LMatrixSearch {
+	s := new(LMatrixSearch)
+	s.SearchLibrary = library
+	return s
 }
 
-func ComputeMatchVal(needle string, haystack string, index int) int {
+//SearchForSubstring returns a slice containing match distance for each of the
+//items in the SearchLibrary
+func (s *LMatrixSearch) SearchForSubstring(searchTerm string) []int {
+	res := make([]int, len(s.SearchLibrary), len(s.SearchLibrary))
+	matches := make(chan ([]int))
+
+	for i, searchTarget := range s.SearchLibrary {
+		potMatch := searchTarget
+		index := i
+		go func() {
+			distance := computeMatchVal(searchTerm, potMatch)
+			matches <- []int{index, distance}
+		}()
+	}
+	for i := 0; i < len(s.SearchLibrary); i++ {
+		match := <-matches
+		index := match[0]
+		distance := match[1]
+		res[index] = distance
+	}
+	return res
+}
+
+func computeMatchVal(needle string, haystack string) int {
 	needleSize := len(needle)
 	haystackSize := len(haystack)
 	minDistance := needleSize
