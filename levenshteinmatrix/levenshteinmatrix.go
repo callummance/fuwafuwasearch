@@ -6,12 +6,12 @@ import "strings"
 //matrix search
 type LMatrixSearch struct {
 	SearchLibrary []string
-	Keys          []string
+	Keys          []interface{}
 	CaseSensitive bool
 }
 
 //NewLMatrixSearch returns a new LMatrixSerachStruct
-func NewLMatrixSearch(library []string, keys []string, caseSensitive bool) *LMatrixSearch {
+func NewLMatrixSearch(library []string, keys []interface{}, caseSensitive bool) *LMatrixSearch {
 	s := new(LMatrixSearch)
 	for _, searchString := range library {
 		if caseSensitive {
@@ -28,9 +28,9 @@ func NewLMatrixSearch(library []string, keys []string, caseSensitive bool) *LMat
 
 //GetMatchingKeys returns a list of keys which are less than or equal to the maximum
 //distance from the search term.
-func (s *LMatrixSearch) GetMatchingKeys(searchTerm string, maxDiff int) []string {
+func (s *LMatrixSearch) GetMatchingKeys(searchTerm string, maxDiff int) []interface{} {
 	distances := s.SearchForSubstring(searchTerm)
-	res := []string{}
+	var res []interface{}
 	shouldUseKeys := len(s.SearchLibrary) == len(s.Keys)
 	for i, d := range distances {
 		if d <= maxDiff {

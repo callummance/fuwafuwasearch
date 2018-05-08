@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	searcher := levenshteinmatrix.NewLMatrixSearch([]string{"test1", "blargle", "plop", "sitting", "sittings"})
-	fmt.Printf("%v", searcher.SearchForSubstring("sitting"))
+	searcher := levenshteinmatrix.NewLMatrixSearch([]string{"test1", "blargle", "plop", "sitting", "sittings"}, []string{"a", "b", "c", "d", "e"}, false)
+	fmt.Printf("%v", searcher.GetMatchingKeys("sitting", 5))
 }
