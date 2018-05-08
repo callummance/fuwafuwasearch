@@ -1,6 +1,8 @@
 package levenshteinmatrix
 
-import "strings"
+import (
+	"strings"
+)
 
 //LMatrixSearch contains the search target and and data required for a levenshtein
 //matrix search
@@ -26,18 +28,20 @@ func NewLMatrixSearch(library []string, keys []interface{}, caseSensitive bool) 
 	return s
 }
 
-//GetMatchingKeys returns a list of keys which are less than or equal to the maximum
-//distance from the search term.
-func (s *LMatrixSearch) GetMatchingKeys(searchTerm string, maxDiff int) []interface{} {
+//GetMatchingKeys returns a map of keys which are sufficiently close to the
+//searchTerm paired with their distance
+func (s *LMatrixSearch) GetMatchingKeys(searchTerm string, maxDiff int) map[interface{}]int {
 	distances := s.SearchForSubstring(searchTerm)
-	var res []interface{}
+	res := make(map[interface{}]int)
 	shouldUseKeys := len(s.SearchLibrary) == len(s.Keys)
 	for i, d := range distances {
-		if d <= maxDiff {
-			if shouldUseKeys {
-				res = append(res, s.Keys[i])
-			} else {
-				res = append(res, s.SearchLibrary[i])
+		if shouldUseKeys {
+			if d <= maxDiff {
+				res[s.Keys[i]] = d
+			}
+		} else {
+			if d <= maxDiff {
+				res[s.SearchLibrary[i]] = d
 			}
 		}
 	}
