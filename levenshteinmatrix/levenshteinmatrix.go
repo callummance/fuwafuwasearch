@@ -22,6 +22,7 @@ func NewLMatrixSearch(library []string, keys []string, caseSensitive bool) *LMat
 	}
 
 	s.Keys = keys
+	s.CaseSensitive = caseSensitive
 	return s
 }
 
